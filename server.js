@@ -42,14 +42,22 @@ app.get('/listfiles', (req, res) => {
     const fs = require('fs');
     const listFiles=[];
     fs.readdir(__dirname + uploadFolder, (err, files) => {
-      files.forEach(file => {
+      const jsonObj = {
+        count: "0",
+        lastEpoch: "0",
+        files: []     
+      };
+      jsonObj.count = files.length;
+      jsonObj.lastEpoch = files.at(-1).slice(-13);
+      files.forEach((file, index) => {
         const fileDetail = {
-          File: file.slice(0,-14),
-          Epoch: file.slice(-13),
-          Size: fs.statSync(__dirname + uploadFolder+ '/'+file).size
+          id: index,
+          file: file.slice(0,-14),
+          epoch: file.slice(-13),
+          size: fs.statSync(__dirname + uploadFolder+ '/'+file).size
         };
-        listFiles.push(fileDetail);
+        jsonObj.files.push(fileDetail);
       });
-      res.json(listFiles);
+      res.json(jsonObj);
     }); 
 });
