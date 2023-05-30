@@ -20,7 +20,7 @@ var storage = multer.diskStorage({
       cb(null, __dirname + uploadFolder)
     },
     filename: function (req, file, cb) {
-      cb(null, file.originalname + '-' + new Date().toISOString().slice(0,10))
+      cb(null, file.originalname + '-' + Date.now())
     }
 });
 
@@ -44,8 +44,8 @@ app.get('/listfiles', (req, res) => {
     fs.readdir(__dirname + uploadFolder, (err, files) => {
       files.forEach(file => {
         const fileDetail = {
-          File: file,
-          Date: file.slice(-10),
+          File: file.slice(0,-14),
+          Epoch: file.slice(-13),
           Size: fs.statSync(__dirname + uploadFolder+ '/'+file).size
         };
         listFiles.push(fileDetail);
